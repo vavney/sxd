@@ -3,21 +3,23 @@ import re, cgi, urllib.parse, hashlib
 from asyncio import Queue
 from network.useragent import headers
 import time
-'''
+import aioredis
+import motor.motor_asyncio
 client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
-db = client.test_database
-db = client['test_database']
-'''
-from pymongo import MongoClient
+db = client.zcn_database1
+db = client['zcn_database1']
+
+'''from pymongo import MongoClient
 client = MongoClient()
 db = client["zcn_database1"]
 collection = db["zcn_collection1"]
-
+'''
 import redis
 pool=redis.ConnectionPool(host='127.0.0.1',port=6379,db=0, password="foobared")
 redis_server = redis.StrictRedis(connection_pool=pool)
 
-MAX_TASK = 50
+REDIS_CONNECT = 'redis://:foobared@127.0.0.1:6379/1'
+MAX_TASK = 100
 MAX_TRIES = 3
 class ZCNLink:
     def __init__(self, roots, loop=None, mongo=None):
@@ -37,7 +39,10 @@ class ZCNLink:
         while tries < MAX_TRIES:
             try:
                 md5 = hashlib.md5(url.encode('utf-8')).hexdigest()
-                result = collection.find_one({"id": md5})
+                result = await db.zcn_collection1.find_one({'id': {'$eq': md5}})
+                # print(result)
+                # break
+                # result = collection.find_one({"id": md5})
                 if result:
                     text = result['content']
                     links = await self.parse_links(text, url)
@@ -53,7 +58,8 @@ class ZCNLink:
                     if rep.status == 200:
                         text = await rep.read()
                         collection_target = {'id': md5, 'content': text, 'req_link': url}
-                        collection.insert_one(collection_target)
+                        await db.zcn_collection1.insert_one(collection_target)
+                        # collection.insert_one(collection_target)
                         links = await self.parse_links(text, req_url=url)
                         if links is not None:
                             for link in links.difference(self.seen_urls):
@@ -94,8 +100,13 @@ class ZCNLink:
                 return links
             else:
                 price_links = ["{}&low-price={}&high-price={}".format(req_url, i+1, i+10) for i in range(0, 100, 10)]
-                print(price_links)
-                redis_server.lpush('prices_link', *price_links)
+                redis = await aioredis.create_redis_pool(
+                    'redis://:foobared@127.0.0.1:6379/1', loop=loop)
+                await redis.lpush('price_link_c', *price_links)
+                redis.close()
+                await redis.wait_closed()
+                # print(price_links)
+                # redis_server.lpush('prices_link_b', *price_links)
                 print('redis insert success')
         except Exception as e:
             print(e)
