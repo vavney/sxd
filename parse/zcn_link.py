@@ -14,12 +14,12 @@ client = MongoClient()
 db = client["zcn_database1"]
 collection = db["zcn_collection1"]
 '''
-import redis
-pool=redis.ConnectionPool(host='127.0.0.1',port=6379,db=0, password="foobared")
-redis_server = redis.StrictRedis(connection_pool=pool)
+# import redis
+# pool=redis.ConnectionPool(host='127.0.0.1',port=6379,db=0, password="foobared")
+# redis_server = redis.StrictRedis(connection_pool=pool)
 
-REDIS_CONNECT = 'redis://:foobared@127.0.0.1:6379/1'
-MAX_TASK = 100
+REDIS_CONNECT = 'redis://127.0.0.1:6379/1'
+MAX_TASK = 50
 MAX_TRIES = 3
 class ZCNLink:
     def __init__(self, roots, loop=None, mongo=None):
@@ -101,8 +101,8 @@ class ZCNLink:
             else:
                 price_links = ["{}&low-price={}&high-price={}".format(req_url, i+1, i+10) for i in range(0, 100, 10)]
                 redis = await aioredis.create_redis_pool(
-                    'redis://:foobared@127.0.0.1:6379/1', loop=loop)
-                await redis.lpush('price_link_c', *price_links)
+                    REDIS_CONNECT, loop=loop)
+                await redis.lpush('price_link_b', *price_links)
                 redis.close()
                 await redis.wait_closed()
                 # print(price_links)
