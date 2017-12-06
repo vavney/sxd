@@ -21,7 +21,7 @@ class FakeChromeUA:
 
 headers = {
     'User-Agent': FakeChromeUA.get_ua(),
-    'Accept-Encoding': 'gzip, deflate, sdch',
+    'Accept-Encoding': 'gzip, deflate, br',
     'Accept-Language': 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Connection': 'keep-alive'
