@@ -9,16 +9,7 @@ client = motor.motor_asyncio.AsyncIOMotorClient('localhost', 27017)
 db = client.zcn_database1
 db = client['zcn_database1']
 
-'''from pymongo import MongoClient
-client = MongoClient()
-db = client["zcn_database1"]
-collection = db["zcn_collection1"]
-'''
-# import redis
-# pool=redis.ConnectionPool(host='127.0.0.1',port=6379,db=0, password="foobared")
-# redis_server = redis.StrictRedis(connection_pool=pool)
-
-REDIS_CONNECT = 'redis://127.0.0.1:6379/1'
+REDIS_CONNECT = 'redis://:foobared@127.0.0.1:6379/1'
 MAX_TASK = 50
 MAX_TRIES = 3
 class ZCNLink:
@@ -101,12 +92,10 @@ class ZCNLink:
             else:
                 price_links = ["{}&low-price={}&high-price={}".format(req_url, i+1, i+10) for i in range(0, 100, 10)]
                 redis = await aioredis.create_redis_pool(
-                    REDIS_CONNECT, loop=loop)
+                    REDIS_CONNECT, minsize=5, maxsize=10, loop=loop)
                 await redis.lpush('price_link_b', *price_links)
                 redis.close()
                 await redis.wait_closed()
-                # print(price_links)
-                # redis_server.lpush('prices_link_b', *price_links)
                 print('redis insert success')
         except Exception as e:
             print(e)
