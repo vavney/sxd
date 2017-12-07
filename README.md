@@ -5,6 +5,10 @@ on the way
 - change price link to pagination link in redis.
 - mongodb data zip
 - sub/pub
+- cookie jar = aiohttp.DummyCookieJar() session = aiohttp.ClientSession(cookie_jar=jar)
+        https://docs.aiohttp.org/en/stable/client.html?highlight=cookie
+- 执行chrome,获取cookie  selenium框架 操作chrome，执行js获取
+- htmlunit 也可以获取cookie
 
 # DATA
 - category:     6579
@@ -25,3 +29,7 @@ on the way
 
 3. 获取分页链接下面对应的所有图书链接
 4. 获取所有图书详情信息.
+
+# add squid to local
+- port 3128
+

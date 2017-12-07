@@ -15,7 +15,8 @@ CATEGORY_URL = "https://www.amazon.cn/s?" \
                "fst=as%3Aoff&rh=n%3A658390051%2Cn%3A%21658391051%2Cn%3A2045366051%2Cn%3A1381749071%2Cn%3A1381810071%2Cn%3A1381863071%2Cn%3A1381869071%2Cn%3A1381870071&bbn=1381869071&ie=UTF8&qid=1512568288&rnid=1381869071&low-price=1&high-price=80"
 
 # CATEGORY_URL2 = 'https://www.amazon.cn/s?fst=as%3Aoff&rh=n%3A658390051%2Cn%3A%21658391051%2Cn%3A658438051%2Cn%3A659213051&bbn=658438051&ie=UTF8&qid=1512543826&rnid=658438051&low-price=81&high-price=90'
-CATEGORY_URL2 = 'https://www.amazon.cn/s/ref=sr_ex_n_1?rh=n%3A658390051%2Cp_36%3A8100-9000&bbn=658390051&ie=UTF8&qid=1512640886'
+# CATEGORY_URL2 = 'https://www.amazon.cn/s/ref=sr_ex_n_1?rh=n%3A658390051%2Cp_36%3A8100-9000&bbn=658390051&ie=UTF8&qid=1512640886'
+CATEGORY_URL2 = "https://www.amazon.cn/s?fst=as%3Aoff&rh=n%3A658390051%2Cn%3A%21658391051%2Cn%3A2045366051%2Cn%3A2086154051%2Cn%3A2086232051%2Cn%3A2086246051%2Cn%3A2086250051&bbn=2086246051&ie=UTF8&qid=1512568255&rnid=2086246051&low-price=91&high-price=100"
 '''共 9 个结果'''
 '''显示： 1-16条， 共255,359条 '''
 # headers={'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'}
@@ -24,7 +25,7 @@ def parse_page():
 
     md5 = hashlib.md5(CATEGORY_URL2.encode('utf-8')).hexdigest()
     result = collection.find_one({"id": md5})
-    if result:
+    if False:
         print(md5)
         print("{} is exists!!!".format(CATEGORY_URL2))
         return result['content']
